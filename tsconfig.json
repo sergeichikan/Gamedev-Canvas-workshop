@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "ES2020",
+    "target": "ES2020",
+
+    "declaration": false,
+    "declarationMap": false,
+
+    "sourceMap": true,
+    "inlineSourceMap": false,
+
+    "moduleResolution": "Node",
+
+    "strict": true,
+    "alwaysStrict": true,
+
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "forceConsistentCasingInFileNames": true,
+    "noStrictGenericChecks": true
+  }
+}
