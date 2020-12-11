@@ -36,11 +36,19 @@ class Point {
 
 class Brick extends Point {
 
-
+    public width: number;
+    public height: number;
+    public padding: number;
+    public offsetTop: number;
+    public offsetLeft: number;
 
     constructor(x: number, y: number, status: 1 | 0) {
         super(x, y, status);
-
+        this.width = 75;
+        this.height = 20;
+        this.padding = 10;
+        this.offsetTop = 30;
+        this.offsetLeft = 30;
     }
 }
 
@@ -68,22 +76,20 @@ let paddleWidth: number = 75;
 let paddleX: number = (canvas.width - paddleWidth) / 2;
 let rightPressed: boolean = false;
 let leftPressed: boolean = false;
+
 let brickRowCount: number = 5;
 let brickColumnCount: number = 3;
-let brickWidth: number = 75;
-let brickHeight: number = 20;
-let brickPadding: number = 10;
-let brickOffsetTop: number = 30;
-let brickOffsetLeft: number = 30;
+
 let score: number = 0;
 let lives: number = 3;
 
-let bricks: Point[][] = [];
+let bricks: Brick[][] = [];
 
 for (let c = 0; c < brickColumnCount; c++) {
     bricks[c] = [];
     for (let r = 0; r < brickRowCount; r++) {
-        bricks[c][r] = new Point(0, 0, 1);
+        // bricks[c][r] = new Point(0, 0, 1);
+        bricks[c][r] = new Brick(0, 0, 1);
     }
 }
 
@@ -112,16 +118,17 @@ document.addEventListener("mousemove", (e) => {
 const collisionDetection = (): void => {
     for (let c: number = 0; c < brickColumnCount; c++) {
         for(let r: number = 0; r < brickRowCount; r++) {
-            let b: Point = bricks[c][r];
-            if (b.status === 1) {
-                if (x > b.x && x < b.x+brickWidth && y > b.y && y < b.y + brickHeight) {
-                    dy = -dy;
-                    b.status = 0;
-                    score++;
-                    if(score === brickRowCount * brickColumnCount) {
-                        alert("YOU WIN, CONGRATS!");
-                        document.location.reload();
-                    }
+            let brick: Brick = bricks[c][r];
+            if (brick.status !== 1) {
+                continue;
+            }
+            if (x > brick.x && x < brick.x + brick.width && y > brick.y && y < brick.y + brick.height) {
+                dy = -dy;
+                brick.status = 0;
+                score++;
+                if(score === brickRowCount * brickColumnCount) {
+                    alert("YOU WIN, CONGRATS!");
+                    document.location.reload();
                 }
             }
         }
@@ -145,17 +152,17 @@ const drawPaddle = () => {
 const drawBricks = () => {
     for(let c=0; c<brickColumnCount; c++) {
         for(let r=0; r<brickRowCount; r++) {
-            if(bricks[c][r].status == 1) {
-                let brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
-                let brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
-                bricks[c][r].x = brickX;
-                bricks[c][r].y = brickY;
-                ctx.beginPath();
-                ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = "#0095DD";
-                ctx.fill();
-                ctx.closePath();
+            const brick: Brick = bricks[c][r];
+            if (brick.status !== 1) {
+                continue;
             }
+            brick.x = (r * (brick.width + brick.padding)) + brick.offsetLeft;
+            brick.y = (c * (brick.height + brick.padding)) + brick.offsetTop;
+            ctx.beginPath();
+            ctx.rect(brick.x, brick.y, brick.width, brick.height);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
         }
     }
 };
